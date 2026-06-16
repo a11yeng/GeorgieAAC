@@ -487,3 +487,33 @@ body:not(.editing) .button-image img {
 body:not(.editing) .button-symbol {
   font-size: clamp(2.5rem, 14vmin, 9rem);
 }
+
+.json-transfer-details {
+  margin-top: 0.85rem;
+  border: 1px solid rgba(20, 33, 61, 0.12);
+  border-radius: 14px;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.json-transfer-details summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.import-json-label {
+  margin-top: 0.85rem;
+}
+
+.json-transfer-box {
+  width: 100%;
+  min-height: 7rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  border: 1px solid rgba(20, 33, 61, 0.18);
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: #ffffff;
+}

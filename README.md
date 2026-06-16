@@ -110,3 +110,8 @@ Home includes Rest, Snack, Hug, Toys, My words, and Occupational Therapy. Snack/
 - The bundled sample board is the requested Home/Snack/Toys/My words/Occupational Therapy structure.
 - Folder buttons use S, F, and SF behavior as specified.
 - Back now returns to the previously visited numbered grid page inside a multi-page folder before backing out of that folder.
+
+
+## Import/export reliability note
+
+This version includes a more robust profile import flow. It supports importing from a `.json` file and also supports copy/paste JSON transfer under **Edit board → Profiles → Export / import profiles**. The copy/paste option is included because some mobile browsers or file managers can occasionally hand the app a wrapper/preview file instead of the raw JSON contents.

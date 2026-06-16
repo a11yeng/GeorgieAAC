@@ -225,7 +225,22 @@
           <button id="exportAllProfiles" class="secondary-btn" type="button">Export all profiles</button>
           <button id="importProfilesButton" class="primary-btn" type="button">Import profile JSON</button>
         </div>
-        <input id="importProfilesFile" type="file" accept="application/json,.json" hidden />
+        <input id="importProfilesFile" type="file" accept="application/json,.json,text/json,text/plain" hidden />
+        <label class="field-label import-json-label">
+          Or paste exported JSON
+          <textarea id="importProfilesText" class="json-transfer-box" rows="5" placeholder="Paste a SpeakGrid profile export here"></textarea>
+        </label>
+        <div class="profile-actions">
+          <button id="importProfilesTextButton" class="secondary-btn" type="button">Import pasted JSON</button>
+        </div>
+        <details class="json-transfer-details">
+          <summary>Backup copy/paste export text</summary>
+          <p class="hint">After exporting, the JSON text also appears here. Copy it if the browser download/import flow is unreliable on a device.</p>
+          <textarea id="exportProfilesText" class="json-transfer-box" rows="5" readonly placeholder="Exported JSON will appear here after you export a profile."></textarea>
+          <div class="profile-actions">
+            <button id="copyExportProfilesText" class="secondary-btn" type="button">Copy export text</button>
+          </div>
+        </details>
         <p class="hint">Exports are local JSON files that include board layouts, folders, button text, images stored in the app, and profile passcodes. Keep exported files private if passcodes or photos are sensitive.</p>
       </section>
     </form>

@@ -277,6 +277,10 @@ const exportCurrentProfileButton = document.getElementById('exportCurrentProfile
 const exportAllProfilesButton = document.getElementById('exportAllProfiles');
 const importProfilesButton = document.getElementById('importProfilesButton');
 const importProfilesFile = document.getElementById('importProfilesFile');
+const importProfilesText = document.getElementById('importProfilesText');
+const importProfilesTextButton = document.getElementById('importProfilesTextButton');
+const exportProfilesText = document.getElementById('exportProfilesText');
+const copyExportProfilesText = document.getElementById('copyExportProfilesText');
 
 function loadProfiles() {
   try {
@@ -1164,7 +1168,13 @@ function slugifyFilename(text) {
 }
 
 function downloadJson(filename, payload) {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const jsonText = JSON.stringify(payload, null, 2);
+
+  if (exportProfilesText) {
+    exportProfilesText.value = jsonText;
+  }
+
+  const blob = new Blob([jsonText], { type: 'application/json;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
@@ -1324,24 +1334,81 @@ function importProfilesFromObject(payload) {
   alert(`Imported ${importedProfiles.length} profile${importedProfiles.length === 1 ? '' : 's'}.`);
 }
 
-function importProfilesFromFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = event => {
-    try {
-      const payload = JSON.parse(String(event.target.result || '{}'));
-      importProfilesFromObject(payload);
-    } catch {
-      alert('The selected file could not be read as JSON.');
-    } finally {
-      if (importProfilesFile) importProfilesFile.value = '';
+function cleanImportText(text) {
+  let cleaned = String(text || '')
+    .replace(/^\uFEFF/, '')
+    .trim();
+
+  if (cleaned.startsWith('data:')) {
+    const commaIndex = cleaned.indexOf(',');
+    if (commaIndex >= 0) {
+      cleaned = decodeURIComponent(cleaned.slice(commaIndex + 1)).trim();
     }
-  };
-  reader.onerror = () => {
-    alert('The selected file could not be read.');
+  }
+
+  return cleaned;
+}
+
+function parseSpeakGridJson(text) {
+  const cleaned = cleanImportText(text);
+
+  if (!cleaned) {
+    throw new Error('The file was empty.');
+  }
+
+  if (cleaned.startsWith('<!DOCTYPE') || cleaned.startsWith('<html') || cleaned.startsWith('<')) {
+    throw new Error('The selected file looks like an HTML page instead of a JSON export.');
+  }
+
+  try {
+    return JSON.parse(cleaned);
+  } catch (firstError) {
+    const firstBrace = cleaned.indexOf('{');
+    const firstBracket = cleaned.indexOf('[');
+    const starts = [firstBrace, firstBracket].filter(index => index >= 0);
+    const start = starts.length ? Math.min(...starts) : -1;
+    const end = Math.max(cleaned.lastIndexOf('}'), cleaned.lastIndexOf(']'));
+
+    if (start >= 0 && end > start) {
+      try {
+        return JSON.parse(cleaned.slice(start, end + 1));
+      } catch {}
+    }
+
+    const preview = cleaned.slice(0, 80).replace(/\s+/g, ' ');
+    throw new Error(`JSON parse failed. File starts with: "${preview}${cleaned.length > 80 ? '…' : ''}"`);
+  }
+}
+
+function readFileAsTextWithFallback(file) {
+  if (file && typeof file.text === 'function') {
+    return file.text();
+  }
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = event => resolve(String(event.target?.result || ''));
+    reader.onerror = () => reject(new Error('The selected file could not be read by the browser.'));
+    reader.readAsText(file);
+  });
+}
+
+function importProfilesFromText(text) {
+  const payload = parseSpeakGridJson(text);
+  importProfilesFromObject(payload);
+}
+
+async function importProfilesFromFile(file) {
+  if (!file) return;
+
+  try {
+    const text = await readFileAsTextWithFallback(file);
+    importProfilesFromText(text);
+  } catch (error) {
+    alert(`The selected file could not be read as JSON.\n\n${error?.message || 'Unknown error'}`);
+  } finally {
     if (importProfilesFile) importProfilesFile.value = '';
-  };
-  reader.readAsText(file);
+  }
 }
 
 function init() {
@@ -1369,6 +1436,30 @@ function init() {
   exportAllProfilesButton?.addEventListener('click', exportAllProfiles);
   importProfilesButton?.addEventListener('click', () => importProfilesFile?.click());
   importProfilesFile?.addEventListener('change', () => importProfilesFromFile(importProfilesFile.files?.[0]));
+  importProfilesTextButton?.addEventListener('click', () => {
+    try {
+      importProfilesFromText(importProfilesText?.value || '');
+      if (importProfilesText) importProfilesText.value = '';
+    } catch (error) {
+      alert(`The pasted text could not be read as JSON.\n\n${error?.message || 'Unknown error'}`);
+    }
+  });
+  copyExportProfilesText?.addEventListener('click', async () => {
+    const text = exportProfilesText?.value || '';
+    if (!text) {
+      alert('Export a profile first, then copy the export text.');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      alert('Export text copied.');
+    } catch {
+      exportProfilesText?.focus();
+      exportProfilesText?.select();
+      alert('Copy was blocked by the browser. Select the export text and copy it manually.');
+    }
+  });
   document.getElementById('unlockProfile').addEventListener('click', unlockPendingProfile);
   document.getElementById('cancelUnlock').addEventListener('click', () => unlockDialog.close());
   unlockPasscode.addEventListener('keydown', event => { if (event.key === 'Enter') unlockPendingProfile(); });
