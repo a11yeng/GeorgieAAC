@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="SpeakGrid" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>SpeakGrid AAC</title>
-  <link rel="manifest" href="manifest.json?v=20260612-profile-import-export" />
-  <link rel="stylesheet" href="styles.css?v=20260612-profile-import-export" />
+  <link rel="manifest" href="manifest.json?v=20260616-default-board-nav-back-fix" />
+  <link rel="stylesheet" href="styles.css?v=20260616-default-board-nav-back-fix" />
 </head>
 <body>
   <header class="app-header">
@@ -169,10 +169,12 @@
       </fieldset>
 
       <menu class="dialog-actions">
-        <button id="deleteButton" class="danger-btn" type="button">Clear button</button>
+        <button id="deleteButton" class="secondary-btn" type="button">Clear button content</button>
+        <button id="deleteSlotButton" class="danger-btn" type="button">Delete button slot</button>
         <button id="cancelEditor" class="secondary-btn" type="button">Cancel</button>
         <button id="saveButton" class="primary-btn" type="button">Save</button>
       </menu>
+      <p class="hint">Clear empties this spot but keeps the grid placement. Delete removes the spot and shifts later buttons forward.</p>
     </form>
   </dialog>
 
@@ -247,6 +249,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=20260612-profile-import-export"></script>
+  <script src="app.js?v=20260616-default-board-nav-back-fix"></script>
 </body>
 </html>

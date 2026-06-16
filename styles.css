@@ -435,3 +435,55 @@ body.editing .grid {
     grid-template-columns: 1fr;
   }
 }
+
+/* Larger responsive button images: fill the button's image area while preserving a small label strip. */
+.aac-button {
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: .25rem;
+  padding: .35rem;
+  overflow: hidden;
+}
+
+.button-image {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-image img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+}
+
+.button-symbol {
+  font-size: clamp(2.25rem, 12vmin, 8rem);
+  line-height: 1;
+}
+
+.button-label {
+  width: 100%;
+  min-height: 1.25em;
+  max-height: 2.6em;
+  line-height: 1.12;
+  padding: 0 .1rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+body:not(.editing) .button-image img {
+  max-height: 100%;
+}
+
+body:not(.editing) .button-symbol {
+  font-size: clamp(2.5rem, 14vmin, 9rem);
+}

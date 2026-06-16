@@ -39,8 +39,6 @@ This is not a medical device and is not a replacement for a commercial AAC syste
 ## Update notes
 
 - Board settings are hidden until **Edit board** is selected.
-- In normal communication mode, touch-drag scrolling over the board is disabled so buttons behave more like an AAC grid.
-- In Edit mode, scrolling is re-enabled so the user can reach editing controls and larger boards.
 
 ## Folder/page buttons
 
@@ -84,3 +82,31 @@ Profile transfer is local-only and file-based. In **Edit board → Profiles**, u
 - **Import profile JSON** on another device/browser to add or replace profiles from an exported file.
 
 Exported JSON files include profile names, board layouts, folders/pages, button text, embedded uploaded images, and profile passcodes. Keep these files private if they contain sensitive photos, names, or passcodes.
+
+## 2026-06-16 delete button + larger image layout update
+
+- The button editor now has two removal options:
+  - **Clear button content** empties the selected spot but keeps the grid placement.
+  - **Delete button slot** removes the spot and shifts later buttons forward.
+- Button images now scale to fill more of the button area while preserving a small label strip at the bottom.
+- Uploaded photos and internet images resize responsively as grid size changes.
+
+
+## 2026-06-16 default sample board update
+
+New installs and **Reset sample board** now create this default structure:
+
+- Home: 3 columns x 2 rows
+- Snack: 3 columns x 3 rows
+- Toys: 3 columns x 3 rows
+- My words: 3 columns x 2 rows
+- Occupational Therapy: 3 columns x 3 rows
+
+Home includes Rest, Snack, Hug, Toys, My words, and Occupational Therapy. Snack/Toys/Occupational Therapy use Speak + Open Folder where requested; My words opens its folder without speaking first. Each page stores its own row/column layout.
+
+
+## 2026-06-16 default board + Back navigation fix
+
+- The bundled sample board is the requested Home/Snack/Toys/My words/Occupational Therapy structure.
+- Folder buttons use S, F, and SF behavior as specified.
+- Back now returns to the previously visited numbered grid page inside a multi-page folder before backing out of that folder.

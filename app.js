@@ -4,31 +4,65 @@ const PROFILE_EXPORT_VERSION = 'speakgrid-profile-export-v1';
 const ALL_PROFILES_EXPORT_VERSION = 'speakgrid-profiles-export-v1';
 
 const defaultButtons = [
-  { label: 'Yes', spoken: 'Yes', symbol: '👍', color: '#e8f7e8' },
-  { label: 'No', spoken: 'No', symbol: '👎', color: '#ffe8e8' },
-  { label: 'Drink', spoken: 'I want a drink', symbol: '💧', color: '#e7f1ff' },
-  { label: 'Food', spoken: 'I am hungry', symbol: '🍽️', color: '#fff1df' },
-  { label: 'Bathroom', spoken: 'I need to use the bathroom', symbol: '🚽', color: '#eaf4ff' },
-  { label: 'Feelings', spoken: '', symbol: '😊', color: '#fff8cf', action: 'folder', folderName: 'Feelings' },
-  { label: 'Pain', spoken: 'I am in pain', symbol: '🤒', color: '#ffe9ec' },
-  { label: 'Places', spoken: '', symbol: '🏠', color: '#eff8ed', action: 'folder', folderName: 'Places' },
-  { label: 'Stop', spoken: 'Stop please', symbol: '✋', color: '#ffe7e7' },
-  { label: 'More', spoken: 'I want more', symbol: '➕', color: '#edf3ff' }
+  { label: 'Rest', spoken: 'Rest', symbol: '😴', color: '#eef0ff', action: 'speak' },
+  { label: 'Snack', spoken: 'Snack', symbol: '🍎', color: '#fff1df', action: 'speakFolder' },
+  { label: 'Hug', spoken: 'Hug', symbol: '🤗', color: '#ffeef5', action: 'speak' },
+  { label: 'Toys', spoken: 'Toys', symbol: '🧸', color: '#fff8cf', action: 'speakFolder' },
+  { label: 'My words', spoken: '', symbol: '💬', color: '#e7f1ff', action: 'folder' },
+  { label: 'Occupational Therapy', spoken: 'Occupational Therapy', symbol: '✋', color: '#eff8ed', action: 'speakFolder' }
 ];
 
 const sampleFolderPages = {
-  Feelings: [
-    { label: 'Happy', spoken: 'I feel happy', symbol: '😊', color: '#fff8cf' },
-    { label: 'Sad', spoken: 'I feel sad', symbol: '😢', color: '#eef0ff' },
-    { label: 'Mad', spoken: 'I feel mad', symbol: '😡', color: '#ffe7e7' },
-    { label: 'Sick', spoken: 'I feel sick', symbol: '🤒', color: '#ffe9ec' }
-  ],
-  Places: [
-    { label: 'Home', spoken: 'I want to go home', symbol: '🏠', color: '#eff8ed' },
-    { label: 'Car', spoken: 'I want to go in the car', symbol: '🚗', color: '#edf3ff' },
-    { label: 'Bed', spoken: 'I want to go to bed', symbol: '🛏️', color: '#f1edff' },
-    { label: 'Outside', spoken: 'I want to go outside', symbol: '🌳', color: '#eff8ed' }
-  ]
+  Snack: {
+    columns: 3,
+    rows: 3,
+    buttons: [
+      { label: 'Apple', spoken: 'Apple', symbol: '🍎', color: '#ffe8e8', action: 'speak' },
+      { label: 'Cheese', spoken: 'Cheese', symbol: '🧀', color: '#fff8cf', action: 'speak' },
+      { label: 'Blueberries', spoken: 'Blueberries', symbol: '🫐', color: '#e7f1ff', action: 'speak' },
+      { label: 'Milk', spoken: 'Milk', symbol: '🥛', color: '#eef7ff', action: 'speak' },
+      { label: 'Veggie Straws', spoken: 'Veggie Straws', symbol: '🥕', color: '#fff1df', action: 'speak' },
+      { label: 'Goldfish', spoken: 'Goldfish', symbol: '🐟', color: '#fff8cf', action: 'speak' }
+    ]
+  },
+  Toys: {
+    columns: 3,
+    rows: 3,
+    buttons: [
+      { label: 'Bubbles', spoken: 'Bubbles', symbol: '🫧', color: '#e7f7ff', action: 'speak' },
+      { label: 'Music', spoken: 'Music', symbol: '🎵', color: '#f1edff', action: 'speak' },
+      { label: 'Book', spoken: 'Book', symbol: '📚', color: '#fff1df', action: 'speak' },
+      { label: 'Little People', spoken: 'Little People', symbol: '👥', color: '#eff8ed', action: 'speak' },
+      { label: 'Baby Moana', spoken: 'Baby Moana', symbol: '🌺', color: '#ffeef5', action: 'speak' },
+      { label: 'Stuffies', spoken: 'Stuffies', symbol: '🧸', color: '#fff8cf', action: 'speak' },
+      { label: 'Puppy', spoken: 'Puppy', symbol: '🐶', color: '#ffe8e8', action: 'speak' }
+    ]
+  },
+  'My words': {
+    columns: 3,
+    rows: 2,
+    buttons: [
+      { label: 'Hi', spoken: 'Hi', symbol: '👋', color: '#e7f1ff', action: 'speak' },
+      { label: 'Bye', spoken: 'Bye', symbol: '👋', color: '#eef0ff', action: 'speak' },
+      { label: 'Yes', spoken: 'Yes', symbol: '👍', color: '#e8f7e8', action: 'speak' },
+      { label: 'No', spoken: 'No', symbol: '👎', color: '#ffe8e8', action: 'speak' },
+      { label: 'More', spoken: 'More', symbol: '➕', color: '#edf3ff', action: 'speak' },
+      { label: 'All done', spoken: 'All done', symbol: '✅', color: '#eff8ed', action: 'speak' }
+    ]
+  },
+  'Occupational Therapy': {
+    columns: 3,
+    rows: 3,
+    buttons: [
+      { label: 'Stand', spoken: 'Stand', symbol: '🧍', color: '#eff8ed', action: 'speak' },
+      { label: 'Bowling', spoken: 'Bowling', symbol: '🎳', color: '#f1edff', action: 'speak' },
+      { label: 'Elmo', spoken: 'Elmo', symbol: '❤️', color: '#ffe8e8', action: 'speak' },
+      { label: 'Go', spoken: 'Go', symbol: '▶️', color: '#e8f7e8', action: 'speak' },
+      { label: 'Sit', spoken: 'Sit', symbol: '🪑', color: '#fff1df', action: 'speak' },
+      { label: 'Oscar the Grouch', spoken: 'Oscar the Grouch', symbol: '🗑️', color: '#eff8ed', action: 'speak' },
+      { label: 'Cookie Monster', spoken: 'Cookie Monster', symbol: '🍪', color: '#e7f1ff', action: 'speak' }
+    ]
+  }
 };
 
 function uid(prefix = 'id') {
@@ -39,9 +73,38 @@ function emptyButton() {
   return { label: '', spoken: '', symbol: '', image: '', color: '#ffffff', action: 'speak', targetPageId: '' };
 }
 
-function makePage(name, buttons = []) {
+function isButtonEmpty(button = {}) {
+  return !button.label && !button.spoken && !button.symbol && !button.image && !button.targetPageId;
+}
+
+function meaningfulSlotCount(page = {}) {
+  const buttons = Array.isArray(page.buttons) ? page.buttons : [];
+  for (let i = buttons.length - 1; i >= 0; i--) {
+    if (!isButtonEmpty(buttons[i])) return i + 1;
+  }
+  return 0;
+}
+
+function trimExtraEmptySlots(page = {}) {
+  if (!Array.isArray(page.buttons)) page.buttons = [];
+  const target = Math.max(Number(page.slotCount) || 0, meaningfulSlotCount(page), 1);
+  page.slotCount = target;
+  while (page.buttons.length > target && isButtonEmpty(page.buttons[page.buttons.length - 1])) {
+    page.buttons.pop();
+  }
+  while (page.buttons.length < target) page.buttons.push(emptyButton());
+}
+
+function makePage(name, buttons = [], options = {}) {
   const normalizedButtons = buttons.map(button => normalizeButton(button));
-  return { id: uid('page'), name, slotCount: Math.max(normalizedButtons.length, 1), buttons: normalizedButtons };
+  const parsedRows = Number(options.rows || 0);
+  const parsedColumns = Number(options.columns || 0);
+  const rows = parsedRows >= 1 ? parsedRows : 0;
+  const columns = parsedColumns >= 1 ? parsedColumns : 0;
+  const capacity = rows && columns ? rows * columns : 0;
+  const slotCount = Math.max(normalizedButtons.length, capacity, 1);
+  while (normalizedButtons.length < slotCount) normalizedButtons.push(emptyButton());
+  return { id: uid('page'), name, rows: rows || undefined, columns: columns || undefined, slotCount, buttons: normalizedButtons };
 }
 
 function normalizeButton(button = {}) {
@@ -57,27 +120,34 @@ function normalizeButton(button = {}) {
 }
 
 function defaultBoard() {
-  const homePage = makePage('Home', defaultButtons);
+  const homePage = makePage('Home', defaultButtons, { columns: 3, rows: 2 });
   const pages = [homePage];
 
   homePage.buttons.forEach(button => {
     if (button.action === 'folder' || button.action === 'speakFolder') {
       const folderName = button.label || 'Folder';
-      const childPage = makePage(folderName, sampleFolderPages[folderName] || []);
+      const sample = sampleFolderPages[folderName] || { buttons: [] };
+      const childButtons = Array.isArray(sample) ? sample : (sample.buttons || []);
+      const childPage = makePage(folderName, childButtons, {
+        columns: Array.isArray(sample) ? 3 : sample.columns,
+        rows: Array.isArray(sample) ? 2 : sample.rows
+      });
       button.targetPageId = childPage.id;
       pages.push(childPage);
     }
   });
 
   return {
-    rows: 3,
-    columns: 4,
+    rows: 2,
+    columns: 3,
     selection: 'release',
     rate: 0.9,
+    showMessage: false,
     message: [],
     homePageId: homePage.id,
     currentPageId: homePage.id,
     currentGridPages: {},
+    navHistory: [],
     pageStack: [],
     pages
   };
@@ -92,10 +162,12 @@ function normalizeBoard(board) {
   if (!board || typeof board !== 'object') return fallback;
 
   if (!Array.isArray(board.pages)) {
-    const homePage = makePage('Home', Array.isArray(board.buttons) ? board.buttons : fallback.pages[0].buttons);
+    const legacyRows = Number(board.rows || fallback.rows);
+    const legacyColumns = Number(board.columns || fallback.columns);
+    const homePage = makePage('Home', Array.isArray(board.buttons) ? board.buttons : fallback.pages[0].buttons, { rows: legacyRows, columns: legacyColumns });
     return {
-      rows: Number(board.rows || fallback.rows),
-      columns: Number(board.columns || fallback.columns),
+      rows: legacyRows,
+      columns: legacyColumns,
       selection: board.selection || fallback.selection,
       rate: Number(board.rate || fallback.rate),
       showMessage: Boolean(board.showMessage),
@@ -103,17 +175,27 @@ function normalizeBoard(board) {
       homePageId: homePage.id,
       currentPageId: homePage.id,
       currentGridPages: {},
+      navHistory: [],
       pageStack: [],
       pages: [homePage]
     };
   }
 
-  const pages = board.pages.length ? board.pages.map(page => ({
-    id: page.id || uid('page'),
-    name: page.name || 'Untitled folder',
-    slotCount: Math.max(Number(page.slotCount) || 0, Array.isArray(page.buttons) ? page.buttons.length : 0, 1),
-    buttons: Array.isArray(page.buttons) ? page.buttons.map(button => normalizeButton(button)) : []
-  })) : fallback.pages;
+  const pages = board.pages.length ? board.pages.map(page => {
+    const buttons = Array.isArray(page.buttons) ? page.buttons.map(button => normalizeButton(button)) : [];
+    const pageRows = Math.max(1, Number(page.rows || board.rows || fallback.rows));
+    const pageColumns = Math.max(1, Number(page.columns || board.columns || fallback.columns));
+    return {
+      id: page.id || uid('page'),
+      name: page.name || 'Untitled folder',
+      rows: pageRows,
+      columns: pageColumns,
+      slotCount: Math.max(Number(page.slotCount) || 0, meaningfulSlotCount({ buttons }), pageRows * pageColumns, 1),
+      buttons
+    };
+  }) : fallback.pages;
+  pages.forEach(page => trimExtraEmptySlots(page));
+
   const homePageId = pages.some(page => page.id === board.homePageId) ? board.homePageId : pages[0].id;
   const currentPageId = pages.some(page => page.id === board.currentPageId) ? board.currentPageId : homePageId;
 
@@ -127,6 +209,9 @@ function normalizeBoard(board) {
     homePageId,
     currentPageId,
     currentGridPages: board.currentGridPages && typeof board.currentGridPages === 'object' ? board.currentGridPages : {},
+    navHistory: Array.isArray(board.navHistory)
+      ? board.navHistory.filter(entry => entry && pages.some(page => page.id === entry.pageId)).map(entry => ({ pageId: entry.pageId, gridPage: Math.max(0, Number(entry.gridPage) || 0) }))
+      : [],
     pageStack: Array.isArray(board.pageStack) ? board.pageStack.filter(id => pages.some(page => page.id === id)) : [],
     pages
   };
@@ -236,6 +321,54 @@ function getPageName(id) {
   return state.pages.find(page => page.id === id)?.name || 'Folder';
 }
 
+function folderTargetsFromPage(page) {
+  return (page?.buttons || [])
+    .filter(button => (button.action === 'folder' || button.action === 'speakFolder') && button.targetPageId)
+    .map(button => button.targetPageId);
+}
+
+function findPathToPage(targetPageId) {
+  if (!targetPageId || !state.pages.some(page => page.id === targetPageId)) return [state.homePageId].filter(Boolean);
+  if (targetPageId === state.homePageId) return [state.homePageId];
+
+  const queue = [[state.homePageId]];
+  const seen = new Set([state.homePageId]);
+
+  while (queue.length) {
+    const path = queue.shift();
+    const page = state.pages.find(item => item.id === path[path.length - 1]);
+    for (const childId of folderTargetsFromPage(page)) {
+      if (seen.has(childId)) continue;
+      const nextPath = [...path, childId];
+      if (childId === targetPageId) return nextPath;
+      seen.add(childId);
+      queue.push(nextPath);
+    }
+  }
+
+  return [targetPageId];
+}
+
+function syncPageStackToCurrent() {
+  const path = findPathToPage(state.currentPageId);
+  state.pageStack = path.length > 1 ? path.slice(0, -1) : [];
+}
+
+function pushNavigationState() {
+  if (!Array.isArray(state.navHistory)) state.navHistory = [];
+  state.navHistory.push({
+    pageId: state.currentPageId,
+    gridPage: getGridPageIndex(state.currentPageId)
+  });
+  if (state.navHistory.length > 100) state.navHistory.shift();
+}
+
+function canGoBack() {
+  if (Array.isArray(state.navHistory) && state.navHistory.length) return true;
+  if (getGridPageIndex(state.currentPageId) > 0) return true;
+  return Array.isArray(state.pageStack) && state.pageStack.length > 0;
+}
+
 function isValidPasscode(value, allowBlank = false) {
   if (allowBlank && value === '') return true;
   return /^\d{6}$/.test(value);
@@ -252,24 +385,37 @@ function setupSelect(select, min, max, current) {
   }
 }
 
+function pageRows(page = currentPage()) {
+  return Math.max(1, Number(page?.rows || state.rows || 1));
+}
+
+function pageColumns(page = currentPage()) {
+  return Math.max(1, Number(page?.columns || state.columns || 1));
+}
+
+function capacityForPage(page = currentPage()) {
+  return Math.max(1, pageRows(page) * pageColumns(page));
+}
+
 function syncControlsToState() {
-  setupSelect(columnsSelect, 1, 8, state.columns);
-  setupSelect(rowsSelect, 1, 8, state.rows);
+  const page = currentPage();
+  setupSelect(columnsSelect, 1, 8, pageColumns(page));
+  setupSelect(rowsSelect, 1, 8, pageRows(page));
   selectionMode.value = state.selection;
   rateInput.value = state.rate;
   messageToggle.checked = Boolean(state.showMessage);
 }
 
-function gridCapacity() {
-  return Math.max(1, Number(state.rows || 1) * Number(state.columns || 1));
+function gridCapacity(page = currentPage()) {
+  return capacityForPage(page);
 }
 
 function totalSlotCount(page = currentPage()) {
-  return Math.max(gridCapacity(), Number(page.slotCount) || 0, page.buttons.length || 0);
+  return Math.max(gridCapacity(page), Number(page.slotCount) || 0, meaningfulSlotCount(page), 1);
 }
 
 function gridPageCount(page = currentPage()) {
-  return Math.max(1, Math.ceil(totalSlotCount(page) / gridCapacity()));
+  return Math.max(1, Math.ceil(totalSlotCount(page) / gridCapacity(page)));
 }
 
 function getGridPageIndex(pageId = state.currentPageId) {
@@ -290,29 +436,30 @@ function setGridPageIndex(index, pageId = state.currentPageId) {
 
 function ensureVisibleButtonSlots() {
   const page = currentPage();
+  if (!Array.isArray(page.buttons)) page.buttons = [];
+  page.slotCount = Math.max(Number(page.slotCount) || 0, meaningfulSlotCount(page), 1);
   const capacity = gridCapacity();
   const gridPage = getGridPageIndex(page.id);
-  const needed = Math.max((gridPage + 1) * capacity, totalSlotCount(page));
-  page.slotCount = Math.max(Number(page.slotCount) || 0, needed);
-  while (page.buttons.length < needed) page.buttons.push(emptyButton());
+  const neededForVisiblePage = Math.max((gridPage + 1) * capacity, totalSlotCount(page));
+  while (page.buttons.length < neededForVisiblePage) page.buttons.push(emptyButton());
 }
 
 function handleGridSizeChange(kind, value) {
-  const oldCapacity = gridCapacity();
-  state.pages.forEach(page => {
-    page.slotCount = Math.max(Number(page.slotCount) || 0, page.buttons.length || 0, oldCapacity);
-    while (page.buttons.length < page.slotCount) page.buttons.push(emptyButton());
-  });
+  const page = currentPage();
+  if (!Array.isArray(page.buttons)) page.buttons = [];
+  const oldCapacity = gridCapacity(page);
+  page.slotCount = Math.max(Number(page.slotCount) || 0, meaningfulSlotCount(page), oldCapacity, 1);
+  trimExtraEmptySlots(page);
 
-  state[kind] = Number(value);
-  const newCapacity = gridCapacity();
+  page[kind] = Number(value);
+  if (page.id === state.homePageId) state[kind] = Number(value);
+  const newCapacity = gridCapacity(page);
 
-  state.pages.forEach(page => {
-    page.slotCount = Math.max(Number(page.slotCount) || 0, page.buttons.length || 0, newCapacity);
-    while (page.buttons.length < page.slotCount) page.buttons.push(emptyButton());
-    setGridPageIndex(0, page.id);
-  });
+  page.slotCount = Math.max(Number(page.slotCount) || 0, meaningfulSlotCount(page), newCapacity, 1);
+  trimExtraEmptySlots(page);
+  setGridPageIndex(0, page.id);
 
+  syncControlsToState();
   render();
 }
 
@@ -338,7 +485,7 @@ function updatePageNav() {
   currentPageName.textContent = page.name || 'Home';
   boardPath.textContent = pagePath().map(id => getPageName(id)).join(' › ');
   const atHome = state.currentPageId === state.homePageId;
-  backPage.disabled = !state.pageStack.length;
+  backPage.disabled = !canGoBack();
   homePage.disabled = atHome;
   renamePage.hidden = !editMode;
   deletePage.hidden = !editMode || atHome;
@@ -357,7 +504,7 @@ function render() {
   const visibleButtons = page.buttons.slice(startIndex, startIndex + capacity);
   while (visibleButtons.length < capacity) visibleButtons.push(emptyButton());
 
-  grid.style.gridTemplateColumns = `repeat(${state.columns}, minmax(0, 1fr))`;
+  grid.style.gridTemplateColumns = `repeat(${pageColumns(page)}, minmax(0, 1fr))`;
   grid.innerHTML = '';
   visibleButtons.forEach((button, offset) => {
     const index = startIndex + offset;
@@ -448,6 +595,8 @@ function renderGridPager() {
     pageButton.setAttribute('aria-label', `Show grid page ${i + 1} of ${count}`);
     pageButton.setAttribute('aria-current', i === current ? 'page' : 'false');
     pageButton.addEventListener('click', () => {
+      if (i === current) return;
+      pushNavigationState();
       setGridPageIndex(i, page.id);
       render();
     });
@@ -602,21 +751,47 @@ function activateButton(index) {
 
 function openFolder(pageId) {
   if (!state.pages.some(page => page.id === pageId)) return;
-  if (state.currentPageId !== pageId) state.pageStack.push(state.currentPageId);
+  if (state.currentPageId === pageId) return;
+  pushNavigationState();
   state.currentPageId = pageId;
+  syncPageStackToCurrent();
+  syncControlsToState();
   render();
 }
 
 function goBackPage() {
+  if (Array.isArray(state.navHistory) && state.navHistory.length) {
+    const previous = state.navHistory.pop();
+    if (previous?.pageId && state.pages.some(page => page.id === previous.pageId)) {
+      state.currentPageId = previous.pageId;
+      setGridPageIndex(previous.gridPage || 0, previous.pageId);
+      syncPageStackToCurrent();
+      syncControlsToState();
+      render();
+      return;
+    }
+  }
+
+  const currentGridPage = getGridPageIndex(state.currentPageId);
+  if (currentGridPage > 0) {
+    setGridPageIndex(currentGridPage - 1, state.currentPageId);
+    render();
+    return;
+  }
+
   const previous = state.pageStack.pop();
   if (!previous) return;
   state.currentPageId = previous;
+  syncPageStackToCurrent();
+  syncControlsToState();
   render();
 }
 
 function goHomePage() {
   state.currentPageId = state.homePageId;
   state.pageStack = [];
+  state.navHistory = [];
+  syncControlsToState();
   render();
 }
 
@@ -715,6 +890,7 @@ function swapActiveButtonPlacement() {
   const capacity = gridCapacity();
   const targetIndex = Number(movePageSelect.value || 0) * capacity + Number(moveSlotSelect.value || 0);
   const maxNeeded = targetIndex + 1;
+  page.slotCount = Math.max(Number(page.slotCount) || 0, maxNeeded, meaningfulSlotCount(page), 1);
   while (page.buttons.length < maxNeeded) page.buttons.push(emptyButton());
   const fromIndex = Number(activeIndex);
   if (targetIndex === fromIndex) return;
@@ -771,14 +947,18 @@ function saveEditor() {
     targetPageId = folderSelect.value;
     const folderName = newFolderName.value.trim() || labelInput.value.trim() || 'New folder';
     if (!targetPageId) {
-      const childPage = makePage(folderName, []);
+      const childPage = makePage(folderName, [], { rows: pageRows(currentPage()), columns: pageColumns(currentPage()) });
       state.pages.push(childPage);
       targetPageId = childPage.id;
     }
     if (!labelInput.value.trim()) labelInput.value = folderName;
   }
 
-  currentPage().buttons[index] = {
+  const page = currentPage();
+  page.slotCount = Math.max(Number(page.slotCount) || 0, index + 1, meaningfulSlotCount(page), 1);
+  while (page.buttons.length <= index) page.buttons.push(emptyButton());
+
+  page.buttons[index] = {
     label: labelInput.value.trim(),
     spoken: action === 'folder' ? '' : spokenInput.value.trim(),
     symbol: symbolInput.value.trim(),
@@ -793,7 +973,34 @@ function saveEditor() {
 
 function clearEditorButton() {
   const index = Number(editingIndex.value);
-  currentPage().buttons[index] = emptyButton();
+  const page = currentPage();
+  while (page.buttons.length <= index) page.buttons.push(emptyButton());
+  page.buttons[index] = emptyButton();
+  trimExtraEmptySlots(page);
+  editorDialog.close();
+  render();
+}
+
+function deleteEditorButtonSlot() {
+  const index = Number(editingIndex.value);
+  if (Number.isNaN(index)) return;
+  const page = currentPage();
+  const button = page.buttons[index] || emptyButton();
+  const previousSlotCount = Math.max(Number(page.slotCount) || 0, meaningfulSlotCount(page), 1);
+  if (index >= previousSlotCount && isButtonEmpty(button)) {
+    alert('This is already an empty filler spot. Nothing needs to be deleted.');
+    return;
+  }
+  const name = button.label || button.spoken || `spot ${index + 1}`;
+  if (!confirm(`Delete this button slot (${name})? Later buttons will shift forward to fill the gap.`)) return;
+
+  while (page.buttons.length <= index) page.buttons.push(emptyButton());
+  page.buttons.splice(index, 1);
+  page.slotCount = Math.max(meaningfulSlotCount(page), previousSlotCount - 1, 1);
+  trimExtraEmptySlots(page);
+
+  const currentGridPage = getGridPageIndex(page.id);
+  setGridPageIndex(Math.min(currentGridPage, gridPageCount(page) - 1), page.id);
   editorDialog.close();
   render();
 }
@@ -816,6 +1023,7 @@ function deleteCurrentPage() {
   });
   state.currentPageId = state.homePageId;
   state.pageStack = [];
+  state.navHistory = [];
   render();
 }
 
@@ -1188,6 +1396,7 @@ function init() {
 
   document.getElementById('saveButton').addEventListener('click', saveEditor);
   document.getElementById('deleteButton').addEventListener('click', clearEditorButton);
+  document.getElementById('deleteSlotButton')?.addEventListener('click', deleteEditorButtonSlot);
   document.getElementById('cancelEditor').addEventListener('click', () => editorDialog.close());
   document.getElementById('closeEditor').addEventListener('click', () => editorDialog.close());
   document.getElementById('clearImage').addEventListener('click', () => { tempImage = ''; urlInput.value = ''; renderPreview(); });
