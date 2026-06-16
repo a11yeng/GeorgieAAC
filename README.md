@@ -74,3 +74,13 @@ Version note: 2026-06-11 action dropdown fix. The Button action menu includes Sp
 
 ## 2026-06-11 pagination slot-count fix
 This version preserves a page's total slot count when reducing grid size, so a 4x4 board becomes four 2x2 grid pages instead of losing or hiding slots. It also includes cache-busted file references.
+
+## 2026-06-12 profile export/import update
+
+Profile transfer is local-only and file-based. In **Edit board → Profiles**, use:
+
+- **Export current profile** to download one profile as a `.json` file.
+- **Export all profiles** to download every profile on the current browser/device as a `.json` file.
+- **Import profile JSON** on another device/browser to add or replace profiles from an exported file.
+
+Exported JSON files include profile names, board layouts, folders/pages, button text, embedded uploaded images, and profile passcodes. Keep these files private if they contain sensitive photos, names, or passcodes.

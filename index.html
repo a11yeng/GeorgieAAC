@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="SpeakGrid" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>SpeakGrid AAC</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=20260611-pagination-slotcount-fix" />
+  <link rel="manifest" href="manifest.json?v=20260612-profile-import-export" />
+  <link rel="stylesheet" href="styles.css?v=20260612-profile-import-export" />
 </head>
 <body>
   <header class="app-header">
@@ -215,6 +215,17 @@
         </div>
         <p class="hint">Passcodes are stored locally on this device/browser. They prevent casual profile switching, but they are not medical-grade or cloud account security.</p>
       </section>
+
+      <section class="profile-panel" aria-label="Export and import profiles">
+        <h3>Export / import profiles</h3>
+        <div class="profile-actions">
+          <button id="exportCurrentProfile" class="secondary-btn" type="button">Export current profile</button>
+          <button id="exportAllProfiles" class="secondary-btn" type="button">Export all profiles</button>
+          <button id="importProfilesButton" class="primary-btn" type="button">Import profile JSON</button>
+        </div>
+        <input id="importProfilesFile" type="file" accept="application/json,.json" hidden />
+        <p class="hint">Exports are local JSON files that include board layouts, folders, button text, images stored in the app, and profile passcodes. Keep exported files private if passcodes or photos are sensitive.</p>
+      </section>
     </form>
   </dialog>
 
@@ -236,6 +247,6 @@
     </form>
   </dialog>
 
-  <script src="app.js?v=20260611-action-fix"></script>
+  <script src="app.js?v=20260612-profile-import-export"></script>
 </body>
 </html>

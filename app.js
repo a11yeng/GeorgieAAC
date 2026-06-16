@@ -1,5 +1,7 @@
 const LEGACY_STORAGE_KEY = 'speakgrid-aac-board-v1';
 const PROFILES_STORAGE_KEY = 'speakgrid-aac-profiles-v1';
+const PROFILE_EXPORT_VERSION = 'speakgrid-profile-export-v1';
+const ALL_PROFILES_EXPORT_VERSION = 'speakgrid-profiles-export-v1';
 
 const defaultButtons = [
   { label: 'Yes', spoken: 'Yes', symbol: '👍', color: '#e8f7e8' },
@@ -186,6 +188,10 @@ const unlockDialog = document.getElementById('unlockDialog');
 const unlockProfileName = document.getElementById('unlockProfileName');
 const unlockPasscode = document.getElementById('unlockPasscode');
 const unlockError = document.getElementById('unlockError');
+const exportCurrentProfileButton = document.getElementById('exportCurrentProfile');
+const exportAllProfilesButton = document.getElementById('exportAllProfiles');
+const importProfilesButton = document.getElementById('importProfilesButton');
+const importProfilesFile = document.getElementById('importProfilesFile');
 
 function loadProfiles() {
   try {
@@ -941,6 +947,195 @@ function deleteCurrentProfile() {
   setEditMode(false);
 }
 
+function slugifyFilename(text) {
+  return String(text || 'profile')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'profile';
+}
+
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function profileForExport(profile) {
+  return {
+    id: profile.id,
+    name: profile.name || 'Imported profile',
+    passcode: profile.passcode || '',
+    board: cloneBoard(profile.board)
+  };
+}
+
+function exportCurrentProfile() {
+  saveState();
+  const profile = getCurrentProfile();
+  const payload = {
+    type: PROFILE_EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    app: 'SpeakGrid AAC',
+    profile: profileForExport(profile)
+  };
+  downloadJson(`speakgrid-${slugifyFilename(profile.name)}-profile.json`, payload);
+}
+
+function exportAllProfiles() {
+  saveState();
+  const payload = {
+    type: ALL_PROFILES_EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    app: 'SpeakGrid AAC',
+    currentProfileId: profilesState.currentProfileId,
+    profiles: profilesState.profiles.map(profileForExport)
+  };
+  downloadJson('speakgrid-all-profiles.json', payload);
+}
+
+function uniqueProfileName(baseName) {
+  const base = String(baseName || 'Imported profile').trim() || 'Imported profile';
+  const names = new Set(profilesState.profiles.map(profile => profile.name));
+  if (!names.has(base)) return base;
+  let i = 2;
+  while (names.has(`${base} ${i}`)) i += 1;
+  return `${base} ${i}`;
+}
+
+function prepareImportedProfile(profile, options = {}) {
+  const keepId = Boolean(options.keepId);
+  const forcedId = options.id;
+  const importedName = String(profile?.name || 'Imported profile').trim() || 'Imported profile';
+  const passcode = String(profile?.passcode || '').trim();
+  return {
+    id: forcedId || (keepId && profile?.id ? String(profile.id) : uid('profile')),
+    name: options.name || importedName,
+    passcode: isValidPasscode(passcode, true) ? passcode : '',
+    board: normalizeBoard(profile?.board)
+  };
+}
+
+function profilesFromImportPayload(payload) {
+  if (!payload || typeof payload !== 'object') return [];
+
+  if (payload.type === PROFILE_EXPORT_VERSION && payload.profile) {
+    return [payload.profile];
+  }
+
+  if (payload.type === ALL_PROFILES_EXPORT_VERSION && Array.isArray(payload.profiles)) {
+    return payload.profiles;
+  }
+
+  if (Array.isArray(payload.profiles)) {
+    return payload.profiles;
+  }
+
+  if (payload.profile) {
+    return [payload.profile];
+  }
+
+  if (payload.board || payload.name) {
+    return [payload];
+  }
+
+  return [];
+}
+
+function importSingleProfile(importedProfile) {
+  const importedName = String(importedProfile?.name || 'Imported profile').trim() || 'Imported profile';
+  const existing = profilesState.profiles.find(profile => profile.name === importedName);
+
+  if (existing && confirm(`A profile named "${importedName}" already exists on this device.
+
+Choose OK to replace it, or Cancel to import as a new copy.`)) {
+    const replacement = prepareImportedProfile(importedProfile, { id: existing.id, name: existing.name });
+    const index = profilesState.profiles.findIndex(profile => profile.id === existing.id);
+    profilesState.profiles[index] = replacement;
+    profilesState.currentProfileId = replacement.id;
+  } else {
+    const nextName = uniqueProfileName(importedName);
+    const added = prepareImportedProfile(importedProfile, { name: nextName });
+    profilesState.profiles.push(added);
+    profilesState.currentProfileId = added.id;
+  }
+}
+
+function importManyProfiles(importedProfiles) {
+  const replaceAll = confirm(`This file contains ${importedProfiles.length} profiles.
+
+Choose OK to replace all profiles on this device, or Cancel to add them as imported copies.`);
+
+  if (replaceAll) {
+    const prepared = importedProfiles.map(profile => prepareImportedProfile(profile, { keepId: true }));
+    const seen = new Set();
+    prepared.forEach(profile => {
+      if (!profile.id || seen.has(profile.id)) profile.id = uid('profile');
+      seen.add(profile.id);
+    });
+    profilesState = {
+      currentProfileId: prepared[0].id,
+      profiles: prepared.length ? prepared : [{ id: uid('profile'), name: 'Default', passcode: '', board: defaultBoard() }]
+    };
+  } else {
+    importedProfiles.forEach(importedProfile => {
+      const nextName = uniqueProfileName(importedProfile?.name || 'Imported profile');
+      profilesState.profiles.push(prepareImportedProfile(importedProfile, { name: nextName }));
+    });
+    profilesState.currentProfileId = profilesState.profiles[profilesState.profiles.length - 1].id;
+  }
+}
+
+function importProfilesFromObject(payload) {
+  const importedProfiles = profilesFromImportPayload(payload).filter(profile => profile && typeof profile === 'object');
+  if (!importedProfiles.length) {
+    alert('This file does not look like a SpeakGrid profile export.');
+    return;
+  }
+
+  saveState();
+
+  if (importedProfiles.length === 1) {
+    importSingleProfile(importedProfiles[0]);
+  } else {
+    importManyProfiles(importedProfiles);
+  }
+
+  state = normalizeBoard(getCurrentProfile().board);
+  getCurrentProfile().board = state;
+  saveProfiles();
+  syncControlsToState();
+  renderProfileList();
+  render();
+  alert(`Imported ${importedProfiles.length} profile${importedProfiles.length === 1 ? '' : 's'}.`);
+}
+
+function importProfilesFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = event => {
+    try {
+      const payload = JSON.parse(String(event.target.result || '{}'));
+      importProfilesFromObject(payload);
+    } catch {
+      alert('The selected file could not be read as JSON.');
+    } finally {
+      if (importProfilesFile) importProfilesFile.value = '';
+    }
+  };
+  reader.onerror = () => {
+    alert('The selected file could not be read.');
+    if (importProfilesFile) importProfilesFile.value = '';
+  };
+  reader.readAsText(file);
+}
+
 function init() {
   syncControlsToState();
 
@@ -962,6 +1157,10 @@ function init() {
   document.getElementById('savePasscode').addEventListener('click', saveCurrentPasscode);
   document.getElementById('duplicateProfile').addEventListener('click', duplicateCurrentProfile);
   document.getElementById('deleteProfile').addEventListener('click', deleteCurrentProfile);
+  exportCurrentProfileButton?.addEventListener('click', exportCurrentProfile);
+  exportAllProfilesButton?.addEventListener('click', exportAllProfiles);
+  importProfilesButton?.addEventListener('click', () => importProfilesFile?.click());
+  importProfilesFile?.addEventListener('change', () => importProfilesFromFile(importProfilesFile.files?.[0]));
   document.getElementById('unlockProfile').addEventListener('click', unlockPendingProfile);
   document.getElementById('cancelUnlock').addEventListener('click', () => unlockDialog.close());
   unlockPasscode.addEventListener('keydown', event => { if (event.key === 'Enter') unlockPendingProfile(); });
